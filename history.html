@@ -13,7 +13,7 @@
     .container {
       display: inline-block;
       width: 100%;
-      max-width: 650px;
+      max-width: 900px; /* 카드의 전체 가로 폭을 늘렸습니다 */
     }
     .history-card {
       padding: 30px;
@@ -52,11 +52,13 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
+      table-layout: fixed; /* 고정 너비 적용 */
     }
     th, td {
       border-bottom: 1px solid #eee;
       padding: 12px 10px;
       text-align: left;
+      word-break: break-all; /* 긴 텍스트 줄바꿈 처리 */
     }
     th {
       background-color: #f1f3f5;
@@ -84,9 +86,9 @@
       <table>
         <thead>
           <tr>
-            <th style="width: 25%;">요청 시각</th>
-            <th style="width: 25%;">서류 종류</th>
-            <th style="width: 50%;">상세 요청 내용</th>
+            <th style="width: 20%;">요청 시각</th>
+            <th style="width: 20%;">서류 종류</th>
+            <th style="width: 60%;">상세 요청 내용</th> <!-- 가로 비율을 확장했습니다 -->
           </tr>
         </thead>
         <tbody id="historyTableBody">
@@ -115,7 +117,7 @@
           <tr>
             <td>${item.time}</td>
             <td><strong>${item.type}</strong></td>
-            <td>${item.memo || '(내용 없음)'}</td>
+            <td>${item.memo}</td>
           </tr>
         `;
       });

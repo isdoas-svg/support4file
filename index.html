@@ -33,12 +33,10 @@
       margin: 16px 0; 
       padding: 14px 20px; 
       color: white; 
-      border: none;
       border-radius: 6px; 
       font-weight: bold;
       transition: opacity 0.2s;
       font-size: 16px;
-      cursor: pointer;
       text-align: center;
       text-decoration: none;
       box-sizing: border-box;
@@ -56,81 +54,16 @@
     <div class="menu-card">
       <h2>📄 서류 종류 선택</h2>
       
-      <!-- 1. 결제 서류 버튼 -->
-      <button class="btn btn-blue" onclick="openDocumentAndTrack('결제 서류', '서류 요청 - 스쿨메일.html')">결제 서류</button>
+      <!-- 1. 결제 서류 (현재 창 이동) -->
+      <a class="btn btn-blue" href="웹등록 서류 요청 - 스쿨메일.html">결제 서류</a>
       
-      <!-- 2. 검사 자료 버튼 -->
-      <button class="btn btn-green" onclick="openDocumentAndTrack('검사 자료', '검사 자료 - 스쿨메일(파일 묶음).html')">검사 자료</button>
+      <!-- 2. 검사 자료 (현재 창 이동) -->
+      <a class="btn btn-green" href="웹등록 검사 자료 - 스쿨메일(파일 묶음).html">검사 자료</a>
       
-      <!-- 3. 나의 요청 내역 버튼 -->
+      <!-- 3. 나의 요청 내역 (현재 창 이동) -->
       <a class="btn btn-dark" href="history.html">나의 요청 내역</a>
     </div>
   </div>
-
-  <script>
-    function openDocumentAndTrack(docType, url) {
-      // 1. 서류 창 열기
-      const childWindow = window.open(url, '_blank');
-
-      if (!childWindow) return;
-
-      // 2. 자식 창 내부 이벤트 감시
-      const checkInterval = setInterval(() => {
-        try {
-          if (childWindow.closed) {
-            clearInterval(checkInterval);
-            return;
-          }
-
-          const childDoc = childWindow.document;
-
-          // 전송/보내기/제출 관련 버튼 찾기
-          const submitBtn = Array.from(childDoc.querySelectorAll('button, input[type="submit"], input[type="button"], a'))
-            .find(el => {
-              const text = (el.innerText || el.value || '').trim();
-              return text.includes('전송') || text.includes('보내기') || text.includes('제출');
-            });
-
-          if (submitBtn && !submitBtn.dataset.tracked) {
-            submitBtn.dataset.tracked = "true";
-
-            // 전송하기 버튼 클릭 시 내부 작성 내용 추출 후 저장
-            submitBtn.addEventListener('click', () => {
-              // 서류 페이지 안의 모든 input(text) 및 textarea 값 수집
-              const inputs = Array.from(childDoc.querySelectorAll('input[type="text"], textarea'));
-              
-              const collectedTexts = inputs
-                .map(i => i.value.trim())
-                .filter(val => val !== ''); // 빈 값 제외
-
-              const memoText = collectedTexts.length > 0 ? collectedTexts.join(' / ') : '(내용 없음)';
-
-              saveRecord(docType, memoText);
-            });
-          }
-        } catch (e) {
-          // 로컬 보안 정책 예외 처리
-        }
-      }, 500);
-    }
-
-    // 기록 저장 함수
-    function saveRecord(docType, memoText) {
-      const now = new Date().toLocaleString('ko-KR', { 
-        month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' 
-      });
-
-      let history = JSON.parse(localStorage.getItem('my_request_history') || '[]');
-      history.unshift({
-        time: now,
-        type: docType,
-        memo: memoText
-      });
-
-      if (history.length > 50) history.pop();
-      localStorage.setItem('my_request_history', JSON.stringify(history));
-    }
-  </script>
 
 </body>
 </html>
