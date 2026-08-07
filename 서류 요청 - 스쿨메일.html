@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 서류 요청 - 스쿨메일</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-hover: #45a049;
+            --bg-color: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-color: #212529;
+            --text-muted: #6C757D;
+            --border-color: #DEE2E6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 50vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E9ECEF;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1A1D20;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-color);
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #FAFAFA;
+        }
+
+        textarea:focus {
+            background-color: #FFFFFF;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+        }
+
+        textarea::placeholder {
+            color: #ADB5BD;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.99);
+        }
+
+        iframe {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h3>결제 서류 요청(스쿨메일로 나갑니다.)</h3>
+        
+        <form action="https://hook.us2.make.com/yj4e0f3yma9ivn8m7izabfum3l9sk3w3" method="POST" target="dummyframe">
+            <div class="form-group">
+                <!-- name="text" 및 작성하신 placeholder 문구 유지 -->
+                <textarea 
+                    name="text" 
+                    placeholder="기관명, 검사명, 검사지 부수, 받는 사람 메일 주소는 꼭 들어가야 함." 
+                    required></textarea>
+            </div>
+            
+            <button type="submit" onclick="handleSubmit()">전송하기</button>
+        </form>
+    </div>
+
+    <iframe name="dummyframe" id="dummyframe"></iframe>
+
+    <script>
+        function handleSubmit() {
+            setTimeout(() => {
+                alert('서류 요청 완료!');
+                document.querySelector('textarea[name="text"]').value = '';
+            }, 100);
+        }
+    </script>
+</body>
+</html>
