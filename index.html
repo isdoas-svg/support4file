@@ -20,22 +20,35 @@
       min-width: 280px;
     }
     h2 {
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       color: #333;
     }
+    
+    /* 최근 기록 표시 박스 스타일 */
+    .history-box {
+      margin-bottom: 20px;
+      padding: 10px 14px;
+      background-color: #e9ecef;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #495057;
+      word-break: keep-all;
+    }
+
     /* 공통 버튼 스타일 */
     .btn { 
       display: block; 
-      margin: 18px 0; /* 간격을 기존 10px에서 18px로 넓혔습니다 */
+      margin: 18px 0; 
       padding: 12px 20px; 
       color: white; 
       text-decoration: none; 
       border-radius: 6px; 
       font-weight: bold;
       transition: opacity 0.2s;
+      cursor: pointer;
     }
     .btn:hover {
-      opacity: 0.85; /* 마우스 올렸을 때 살짝 흐려지는 효과 */
+      opacity: 0.85; 
     }
 
     /* 첫 번째 버튼 색상 (파란색 계열) */
@@ -53,9 +66,41 @@
   <div class="menu-card">
     <h2>📄 서류 종류 선택</h2>
     
-    <!-- 버튼별로 다른 색상 클래스(btn-blue, btn-green) 적용 -->
-    <a class="btn btn-blue" href="서류 요청 - 스쿨메일.html" target="_blank">결제 서류</a>
-    <a class="btn btn-green" href="검사 자료 - 스쿨메일(파일 묶음).html" target="_blank">검사 자료</a>
+    <!-- 최근 연 기록이 상단에 표시되는 영역 -->
+    <div id="recentHistory" class="history-box">최근 열람한 기록이 없습니다.</div>
+    
+    <!-- 버튼 클릭 시 기록 저장 후 파일 연결 -->
+    <a class="btn btn-blue" onclick="openAndLog('결제 서류', '서류 요청 - 스쿨메일.html')">결제 서류</a>
+    <a class="btn btn-green" onclick="openAndLog('검사 자료', '검사 자료 - 스쿨메일(파일 묶음).html')">검사 자료</a>
   </div>
+
+  <script>
+    // 1. 페이지가 켜졌을 때 내 브라우저에 저장된 기록이 있는지 확인해서 상단에 띄움
+    window.onload = function() {
+      const lastReport = localStorage.getItem('my_last_report');
+      const lastTime = localStorage.getItem('my_last_time');
+      
+      if (lastReport && lastTime) {
+        document.getElementById('recentHistory').innerText = 
+          `📌 최근 열람: ${lastReport} (${lastTime})`;
+      }
+    };
+
+    // 2. 버튼 클릭 시 클릭한 서류명과 현재 시각을 localStorage에 기록하고 해당 파일 열기
+    function openAndLog(reportName, url) {
+      const now = new Date().toLocaleString();
+      
+      // 내 컴퓨터 브라우저에 데이터 보관
+      localStorage.setItem('my_last_report', reportName);
+      localStorage.setItem('my_last_time', now);
+
+      // 화면에 즉시 갱신 표시
+      document.getElementById('recentHistory').innerText = 
+        `📌 최근 열람: ${reportName} (${now})`;
+
+      // 해당 파일 새 창으로 열기
+      window.open(url, '_blank');
+    }
+  </script>
 </body>
 </html>
