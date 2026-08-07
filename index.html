@@ -13,7 +13,7 @@
     .container {
       display: inline-block;
       width: 100%;
-      max-width: 600px;
+      max-width: 400px;
     }
     .menu-card { 
       padding: 30px; 
@@ -21,211 +21,108 @@
       border-radius: 12px; 
       background-color: #ffffff;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      margin-bottom: 25px;
-      text-align: left;
     }
-    h2, h3 {
+    h2 {
       margin-top: 0;
+      margin-bottom: 25px;
       color: #333;
-      text-align: center;
     }
-
-    /* 입력 박스 및 라벨 스타일 */
-    .input-group {
-      margin-bottom: 20px;
-    }
-    .input-label {
-      display: block;
-      font-size: 14px;
-      font-weight: bold;
-      color: #495057;
-      margin-bottom: 8px;
-    }
-    .input-box {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ced4da;
-      border-radius: 6px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    .input-box:focus {
-      outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
-    }
-
-    /* 공통 버튼 스타일 */
     .btn { 
       display: block; 
       width: 100%;
-      margin: 12px 0; 
+      margin: 16px 0; 
       padding: 14px 20px; 
       color: white; 
       border: none;
       border-radius: 6px; 
       font-weight: bold;
       transition: opacity 0.2s;
-      cursor: pointer;
       font-size: 16px;
+      cursor: pointer;
       text-align: center;
+      text-decoration: none;
       box-sizing: border-box;
     }
     .btn:hover { opacity: 0.85; }
     
     .btn-blue { background-color: #007bff; }
     .btn-green { background-color: #28a745; }
-
-    /* 요청 내역 리스트 상자 스타일 */
-    .history-card {
-      padding: 25px;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      background-color: #ffffff;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      text-align: left;
-    }
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .btn-clear {
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    
-    /* 요청 내역 표 스타일 */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    th, td {
-      border-bottom: 1px solid #eee;
-      padding: 10px 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f1f3f5;
-      color: #495057;
-    }
-    .no-data {
-      text-align: center;
-      color: #868e96;
-      padding: 20px 0;
-    }
+    .btn-dark { background-color: #495057; }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- 1. 서류 선택 및 입력 영역 -->
     <div class="menu-card">
       <h2>📄 서류 종류 선택</h2>
       
-      <!-- 화면상에 배치된 입력 칸 -->
-      <div class="input-group">
-        <label class="input-label" for="requestMemo">✍️ 상세 요청 내용 입력</label>
-        <input type="text" id="requestMemo" class="input-box" placeholder="요청 내용을 입력하세요 (예: 8월분 결제, OO고 검사지)">
-      </div>
-
-      <!-- 서류 열기 버튼들 -->
-      <button class="btn btn-blue" onclick="openAndLog('결제 서류', '서류 요청 - 스쿨메일.html')">결제 서류 열기</button>
-      <button class="btn btn-green" onclick="openAndLog('검사 자료', '검사 자료 - 스쿨메일(파일 묶음).html')">검사 자료 열기</button>
-    </div>
-
-    <!-- 2. 바로 아래에 배치된 요청 내역 리스트 -->
-    <div class="history-card">
-      <div class="history-header">
-        <h3>📜 나의 요청 내역</h3>
-        <button class="btn-clear" onclick="clearHistory()">🗑️ 기록 초기화</button>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 25%;">요청 시각</th>
-            <th style="width: 25%;">서류 종류</th>
-            <th style="width: 50%;">상세 요청 내용</th>
-          </tr>
-        </thead>
-        <tbody id="historyTableBody">
-          <!-- 요청 기록이 실시간으로 누적됩니다 -->
-        </tbody>
-      </table>
+      <!-- 1. 결제 서류 버튼 -->
+      <button class="btn btn-blue" onclick="openDocumentAndTrack('결제 서류', '서류 요청 - 스쿨메일.html')">결제 서류</button>
+      
+      <!-- 2. 검사 자료 버튼 -->
+      <button class="btn btn-green" onclick="openDocumentAndTrack('검사 자료', '검사 자료 - 스쿨메일(파일 묶음).html')">검사 자료</button>
+      
+      <!-- 3. 나의 요청 내역 버튼 -->
+      <a class="btn btn-dark" href="history.html">나의 요청 내역</a>
     </div>
   </div>
 
   <script>
-    // 페이지 접속 시 저장된 내역 불러오기
-    window.onload = function() {
-      renderHistory();
-    };
+    function openDocumentAndTrack(docType, url) {
+      // 1. 서류 창 열기
+      const childWindow = window.open(url, '_blank');
 
-    function openAndLog(reportName, url) {
-      const memoInput = document.getElementById('requestMemo');
-      const detailMemo = memoInput.value.trim();
+      if (!childWindow) return;
 
+      // 2. 자식 창이 로드되면 내부의 '전송' 관련 버튼 감시 시작
+      const checkInterval = setInterval(() => {
+        try {
+          if (childWindow.closed) {
+            clearInterval(checkInterval);
+            return;
+          }
+
+          // 자식 창 내부 문서 접근
+          const childDoc = childWindow.document;
+
+          // 전송하기/보내기 버튼 찾기 (button, input type=submit/button, a 태그 등)
+          const submitBtn = Array.from(childDoc.querySelectorAll('button, input[type="submit"], input[type="button"], a'))
+            .find(el => {
+              const text = (el.innerText || el.value || '').trim();
+              return text.includes('전송') || text.includes('보내기') || text.includes('제출');
+            });
+
+          if (submitBtn && !submitBtn.dataset.tracked) {
+            // 버튼에 중복 이벤트 등록 방지용 플래그 설정
+            submitBtn.dataset.tracked = "true";
+
+            // 전송하기 버튼 클릭 시 이벤트 감지
+            submitBtn.addEventListener('click', () => {
+              saveRecord(docType);
+            });
+          }
+        } catch (e) {
+          // 동일 도메인(로컬 파일 환경)이 아닌 경우 등 예외 처리
+        }
+      }, 500);
+    }
+
+    // 기록 저장 함수 (알림창 없이 자막처럼 조용히 기록)
+    function saveRecord(docType) {
       const now = new Date().toLocaleString('ko-KR', { 
         month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' 
       });
 
-      // 내 컴퓨터 브라우저에 데이터 기록
       let history = JSON.parse(localStorage.getItem('my_request_history') || '[]');
       history.unshift({
         time: now,
-        type: reportName,
-        memo: detailMemo === "" ? "(내용 없음)" : detailMemo
+        type: docType
       });
 
       if (history.length > 50) history.pop();
       localStorage.setItem('my_request_history', JSON.stringify(history));
-
-      // 화면 아래 표 즉시 갱신
-      renderHistory();
-
-      // 입력한 텍스트 창 비우기
-      memoInput.value = "";
-
-      // 문서 새 창으로 열기
-      window.open(url, '_blank');
-    }
-
-    function renderHistory() {
-      const history = JSON.parse(localStorage.getItem('my_request_history') || '[]');
-      const tbody = document.getElementById('historyTableBody');
-
-      if (history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="no-data">저장된 요청 기록이 없습니다.</td></tr>';
-        return;
-      }
-
-      let html = '';
-      history.forEach(item => {
-        html += `
-          <tr>
-            <td>${item.time}</td>
-            <td><strong>${item.type}</strong></td>
-            <td>${item.memo}</td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
-    }
-
-    function clearHistory() {
-      if (confirm("정말로 모든 요청 기록을 삭제하시겠습니까?")) {
-        localStorage.removeItem('my_request_history');
-        renderHistory();
-      }
     }
   </script>
+
 </body>
 </html>

@@ -13,7 +13,7 @@
     .container {
       display: inline-block;
       width: 100%;
-      max-width: 650px;
+      max-width: 500px;
     }
     .history-card {
       padding: 30px;
@@ -76,7 +76,7 @@
       <div class="history-header">
         <h2>📜 나의 요청 내역</h2>
         <div class="btn-group">
-          <a class="btn-action btn-back" href="./index.html">🏠 메인으로</a>
+          <a class="btn-action btn-back" href="index.html">🏠 메인으로</a>
           <button class="btn-action btn-clear" onclick="clearHistory()">🗑️ 기록 초기화</button>
         </div>
       </div>
@@ -84,9 +84,8 @@
       <table>
         <thead>
           <tr>
-            <th style="width: 25%;">요청 시각</th>
-            <th style="width: 25%;">서류 종류</th>
-            <th style="width: 50%;">상세 요청 내용</th>
+            <th style="width: 50%;">요청 시각</th>
+            <th style="width: 50%;">서류 종류</th>
           </tr>
         </thead>
         <tbody id="historyTableBody">
@@ -105,7 +104,7 @@
       const tbody = document.getElementById('historyTableBody');
 
       if (history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="no-data">저장된 요청 기록이 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="2" class="no-data">저장된 요청 기록이 없습니다.</td></tr>';
         return;
       }
 
@@ -115,7 +114,6 @@
           <tr>
             <td>${item.time}</td>
             <td><strong>${item.type}</strong></td>
-            <td>${item.memo}</td>
           </tr>
         `;
       });
