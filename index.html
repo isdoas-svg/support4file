@@ -74,7 +74,7 @@
 
       if (!childWindow) return;
 
-      // 2. 자식 창이 로드되면 내부의 '전송' 관련 버튼 감시 시작
+      // 2. 자식 창 내부 이벤트 감시
       const checkInterval = setInterval(() => {
         try {
           if (childWindow.closed) {
@@ -82,10 +82,9 @@
             return;
           }
 
-          // 자식 창 내부 문서 접근
           const childDoc = childWindow.document;
 
-          // 전송하기/보내기 버튼 찾기 (button, input type=submit/button, a 태그 등)
+          // 전송/보내기/제출 관련 버튼 찾기
           const submitBtn = Array.from(childDoc.querySelectorAll('button, input[type="submit"], input[type="button"], a'))
             .find(el => {
               const text = (el.innerText || el.value || '').trim();
@@ -93,22 +92,30 @@
             });
 
           if (submitBtn && !submitBtn.dataset.tracked) {
-            // 버튼에 중복 이벤트 등록 방지용 플래그 설정
             submitBtn.dataset.tracked = "true";
 
-            // 전송하기 버튼 클릭 시 이벤트 감지
+            // 전송하기 버튼 클릭 시 내부 작성 내용 추출 후 저장
             submitBtn.addEventListener('click', () => {
-              saveRecord(docType);
+              // 서류 페이지 안의 모든 input(text) 및 textarea 값 수집
+              const inputs = Array.from(childDoc.querySelectorAll('input[type="text"], textarea'));
+              
+              const collectedTexts = inputs
+                .map(i => i.value.trim())
+                .filter(val => val !== ''); // 빈 값 제외
+
+              const memoText = collectedTexts.length > 0 ? collectedTexts.join(' / ') : '(내용 없음)';
+
+              saveRecord(docType, memoText);
             });
           }
         } catch (e) {
-          // 동일 도메인(로컬 파일 환경)이 아닌 경우 등 예외 처리
+          // 로컬 보안 정책 예외 처리
         }
       }, 500);
     }
 
-    // 기록 저장 함수 (알림창 없이 자막처럼 조용히 기록)
-    function saveRecord(docType) {
+    // 기록 저장 함수
+    function saveRecord(docType, memoText) {
       const now = new Date().toLocaleString('ko-KR', { 
         month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' 
       });
@@ -116,7 +123,8 @@
       let history = JSON.parse(localStorage.getItem('my_request_history') || '[]');
       history.unshift({
         time: now,
-        type: docType
+        type: docType,
+        memo: memoText
       });
 
       if (history.length > 50) history.pop();
