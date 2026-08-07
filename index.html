@@ -6,99 +6,84 @@
   <style>
     body { 
       font-family: sans-serif; 
-      padding: 40px; 
+      padding: 40px 20px; 
       text-align: center; 
       background-color: #f8f9fa;
     }
+    .container {
+      display: inline-block;
+      width: 100%;
+      max-width: 450px;
+    }
     .menu-card { 
-      display: inline-block; 
       padding: 30px; 
       border: 1px solid #e0e0e0; 
       border-radius: 12px; 
       background-color: #ffffff;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      min-width: 280px;
     }
     h2 {
-      margin-bottom: 20px;
+      margin-top: 0;
+      margin-bottom: 25px;
       color: #333;
     }
-    
-    /* 최근 기록 표시 박스 스타일 */
-    .history-box {
-      margin-bottom: 20px;
-      padding: 10px 14px;
-      background-color: #e9ecef;
-      border-radius: 6px;
-      font-size: 13px;
-      color: #495057;
-      word-break: keep-all;
-    }
-
-    /* 공통 버튼 스타일 */
     .btn { 
       display: block; 
       margin: 18px 0; 
-      padding: 12px 20px; 
+      padding: 14px 20px; 
       color: white; 
       text-decoration: none; 
       border-radius: 6px; 
       font-weight: bold;
       transition: opacity 0.2s;
       cursor: pointer;
+      font-size: 16px;
     }
-    .btn:hover {
-      opacity: 0.85; 
-    }
-
-    /* 첫 번째 버튼 색상 (파란색 계열) */
-    .btn-blue { 
-      background-color: #007bff; 
-    }
+    .btn:hover { opacity: 0.85; }
     
-    /* 두 번째 버튼 색상 (녹색 계열) */
-    .btn-green { 
-      background-color: #28a745; 
-    }
+    /* 버튼별 색상 */
+    .btn-blue { background-color: #007bff; }
+    .btn-green { background-color: #28a745; }
+    .btn-dark { background-color: #495057; } /* 나의 요청 내역 버튼 */
   </style>
 </head>
 <body>
-  <div class="menu-card">
-    <h2>📄 서류 종류 선택</h2>
-    
-    <!-- 최근 연 기록이 상단에 표시되는 영역 -->
-    <div id="recentHistory" class="history-box">최근 열람한 기록이 없습니다.</div>
-    
-    <!-- 버튼 클릭 시 기록 저장 후 파일 연결 -->
-    <a class="btn btn-blue" onclick="openAndLog('결제 서류', '서류 요청 - 스쿨메일.html')">결제 서류</a>
-    <a class="btn btn-green" onclick="openAndLog('검사 자료', '검사 자료 - 스쿨메일(파일 묶음).html')">검사 자료</a>
+
+  <div class="container">
+    <div class="menu-card">
+      <h2>📄 서류 종류 선택</h2>
+      
+      <!-- 1. 결제 서류 -->
+      <a class="btn btn-blue" onclick="openAndLog('결제 서류', '서류 요청 - 스쿨메일.html')">결제 서류</a>
+      
+      <!-- 2. 검사 자료 -->
+      <a class="btn btn-green" onclick="openAndLog('검사 자료', '검사 자료 - 스쿨메일(파일 묶음).html')">검사 자료</a>
+      
+      <!-- 3. 바로 아래 배치된 나의 요청 내역 -->
+      <a class="btn btn-dark" href="./history.html">나의 요청 내역</a>
+    </div>
   </div>
 
   <script>
-    // 1. 페이지가 켜졌을 때 내 브라우저에 저장된 기록이 있는지 확인해서 상단에 띄움
-    window.onload = function() {
-      const lastReport = localStorage.getItem('my_last_report');
-      const lastTime = localStorage.getItem('my_last_time');
-      
-      if (lastReport && lastTime) {
-        document.getElementById('recentHistory').innerText = 
-          `📌 최근 열람: ${lastReport} (${lastTime})`;
-      }
-    };
-
-    // 2. 버튼 클릭 시 클릭한 서류명과 현재 시각을 localStorage에 기록하고 해당 파일 열기
     function openAndLog(reportName, url) {
-      const now = new Date().toLocaleString();
-      
-      // 내 컴퓨터 브라우저에 데이터 보관
-      localStorage.setItem('my_last_report', reportName);
-      localStorage.setItem('my_last_time', now);
+      const detailMemo = prompt(`[${reportName}] 요청 내용을 입력해주세요.\n(예: 8월분 결제, OO고등학교 검사지 등)`, "");
+      if (detailMemo === null) return;
 
-      // 화면에 즉시 갱신 표시
-      document.getElementById('recentHistory').innerText = 
-        `📌 최근 열람: ${reportName} (${now})`;
+      const now = new Date().toLocaleString('ko-KR', { 
+        month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' 
+      });
 
-      // 해당 파일 새 창으로 열기
+      let history = JSON.parse(localStorage.getItem('my_request_history') || '[]');
+
+      history.unshift({
+        time: now,
+        type: reportName,
+        memo: detailMemo.trim() === "" ? "(내용 없음)" : detailMemo
+      });
+
+      if (history.length > 50) history.pop();
+      localStorage.setItem('my_request_history', JSON.stringify(history));
+
       window.open(url, '_blank');
     }
   </script>

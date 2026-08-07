@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>나의 요청 내역</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      padding: 40px 20px; 
+      text-align: center; 
+      background-color: #f8f9fa;
+    }
+    .container {
+      display: inline-block;
+      width: 100%;
+      max-width: 650px;
+    }
+    .history-card {
+      padding: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      text-align: left;
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    h2 { margin: 0; color: #333; }
+    
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-back { background-color: #007bff; color: white; }
+    .btn-clear { background-color: #dc3545; color: white; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid #eee;
+      padding: 12px 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f3f5;
+      color: #495057;
+    }
+    .no-data {
+      text-align: center;
+      color: #868e96;
+      padding: 30px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="history-card">
+      <div class="history-header">
+        <h2>📜 나의 요청 내역</h2>
+        <div class="btn-group">
+          <a class="btn-action btn-back" href="./index.html">🏠 메인으로</a>
+          <button class="btn-action btn-clear" onclick="clearHistory()">🗑️ 기록 초기화</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">요청 시각</th>
+            <th style="width: 25%;">서류 종류</th>
+            <th style="width: 50%;">상세 요청 내용</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      renderHistory();
+    };
+
+    function renderHistory() {
+      const history = JSON.parse(localStorage.getItem('my_request_history') || '[]');
+      const tbody = document.getElementById('historyTableBody');
+
+      if (history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="no-data">저장된 요청 기록이 없습니다.</td></tr>';
+        return;
+      }
+
+      let html = '';
+      history.forEach(item => {
+        html += `
+          <tr>
+            <td>${item.time}</td>
+            <td><strong>${item.type}</strong></td>
+            <td>${item.memo}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function clearHistory() {
+      if (confirm("정말로 모든 요청 기록을 삭제하시겠습니까?")) {
+        localStorage.removeItem('my_request_history');
+        renderHistory();
+      }
+    }
+  </script>
+</body>
+</html>
