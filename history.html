@@ -69,6 +69,24 @@
       color: #868e96;
       padding: 30px 0;
     }
+
+    /* 스타일 강제 적용 (!important) */
+    .time-bold {
+      font-weight: bold !important;
+      color: #000000 !important;
+    }
+    .type-blue {
+      color: #0056b3 !important; /* 파란색 */
+      font-weight: bold !important;
+    }
+    .type-green {
+      color: #198754 !important; /* 초록색 */
+      font-weight: bold !important;
+    }
+    .type-default {
+      color: #333333 !important;
+      font-weight: bold !important;
+    }
   </style>
 </head>
 <body>
@@ -113,19 +131,22 @@
 
       let html = '';
       history.forEach(item => {
-        // 서류 종류에 따른 색상 스타일 지정
-        let typeStyle = 'color: #333;';
+        const typeText = String(item.type || '').trim();
+        let typeClass = 'type-default';
         
-        if (item.type.includes('결제 서류')) {
-          typeStyle = 'color: #0056b3;'; // 파란색
-        } else if (item.type.includes('검사 자료')) {
-          typeStyle = 'color: #198754;'; // 초록색
+        // '결제 서류' 포함 시 파란색 클래스 적용
+        if (typeText.includes('결제 서류') || typeText.includes('결제서류')) {
+          typeClass = 'type-blue';
+        } 
+        // '검사 자료' 포함 시 초록색 클래스 적용
+        else if (typeText.includes('검사 자료') || typeText.includes('검사자료')) {
+          typeClass = 'type-green';
         }
 
         html += `
           <tr>
-            <td><strong>${item.time}</strong></td>
-            <td><strong style="${typeStyle}">${item.type}</strong></td>
+            <td><span class="time-bold">${item.time}</span></td>
+            <td><span class="${typeClass}">${item.type}</span></td>
             <td>${item.memo}</td>
           </tr>
         `;
